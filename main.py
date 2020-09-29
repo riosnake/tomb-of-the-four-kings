@@ -10,3 +10,6 @@ you will be lost in the dungeon forever. The objective is to find the tomb hoard
 four ancient kings, collect as much additional treasure as possible, and make it out alive.
 """
 
+inventory = []
+torches_found = 0
+

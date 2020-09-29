@@ -1,4 +1,5 @@
 from card import Card
+from deck import Deck
 from random import seed
 import unittest
 
@@ -10,7 +11,7 @@ class TestCard(unittest.TestCase):
     # All cards made it into the shuffled deck
     def test_shuffle_1(self):
         seed(12)
-        deck = Card.shuffle(Card.create_deck())
+        deck = Deck.shuffle(Card.create_deck())
         new_deck = Card.create_deck()
         for card in deck:
             assert card in new_deck, f"{card} not found in {new_deck}"
@@ -20,7 +21,7 @@ class TestCard(unittest.TestCase):
     # and get the same deck again, but that's so unlikely we can ignore it
     def test_shuffle_2(self):
         seed(12)
-        deck = Card.shuffle(Card.create_deck())
+        deck = Deck.shuffle(Card.create_deck())
         new_deck = Card.create_deck()
 
         is_different = False
