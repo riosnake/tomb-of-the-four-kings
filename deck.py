@@ -1,16 +1,27 @@
-from card import Card
+from card import Card, Suites
 from random import choice, random
 
 """
-A generic version of a deck of cards, not specifically build for tomb of the four kings.
-Contains a deck of cards, and a discard pile. Why the discard pile? so we can check which cards have been drawn or not.
+A generic version of a deck of cards, not specifically built for tomb of the four kings.
+Contains a deck of cards, and a discard pile so we can check which cards have been drawn or not.
 
+usage of len, iter, and getitem are to go over the cards in the current facedown deck, not all cards present in the deck class.
+to go through all cards within the deck class, use varName.allCards()
 """
 class Deck:
 
-    def __init__(self, joker=False):
-        self.deck = self.create_deck(joker=joker)
-        self.shuffle()
+    """
+    Sets up the deck of cards
+    Parameters:
+        shuffled: sets whether the deck should start out shuffled or not
+        num_jokers: sets how many jokers should appear in the deck
+        n: determines how many decks of 52 cards are created and used
+    """
+    def __init__(self, shuffled=True, num_jokers=0, n=1):
+        self.deck = self.create_deck(num_jokers=num_jokers, n=n)
+        if shuffled:
+            self.shuffle()
+        self.hand = []
         self.discard = []
 
     def __repr__(self):
@@ -20,20 +31,22 @@ class Deck:
         print("Discard: ")
         for card in self.discard:
             print(card)
-    """
-    Given a list of cards, returns a random ordering of those cards
-    note that this DOES empty the list containing the old deck, so usage should look like
-    deck = Card.shuffle(deck)
-    """
-    @staticmethod
-    def shuffle(deck):
-        # using list comprehension,
-        return [deck.pop(random.randint(0, len(deck) - 1)) for i in range(len(deck))]
 
-    """non-static version of shuffle."""
+    def __iter__(self):
+        return self.deck
+
+    def __len__(self):
+        return len(self.deck)
+
+    def __getitem__(self, item):
+        return self.deck[item]
+
+
+    """
+    Shuffles the current deck.
+    """
     def shuffle(self):
-        # using list comprehension,
-        return [self.deck.pop(random.randint(0, len(self.deck) - 1)) for i in range(len(self.deck))]
+        self.deck = [self.deck.pop(random.randint(0, len(self.deck) - 1)) for i in range(len(self.deck))]
 
     """
     Reshuffles the discard pile back into the deck.
@@ -44,18 +57,19 @@ class Deck:
         self.discard = []
 
     """
-    Returns a deck of 52 unshuffled cards.
-    setting joker to true adds a joker to the end
+    Returns a deck of n * 52 + num_jokers unshuffled cards.
+    jokers are all added at the end of each deck.
     """
     @staticmethod
-    def create_deck(joker=False):
+    def create_deck(num_jokers=0, n=1):
         deck = []
-        for suite in ["Spades", "Diamonds", "Clubs", "Hearts"]:
-            for number in range(1, 14):
-                deck.append(Card(suite=suite, number=number))
-        if joker:
+        for i in range(n):
+            for suite in Suites:
+                for number in range(1, 14):
+                    deck.append(Card(suite=suite, number=number))
+
+        for i in range(num_jokers):
             deck.append(Card(suite="Joker", number=0))
-        # Right here would be where you would shuffle the deck if we wanted that option.
         return deck
 
     """
