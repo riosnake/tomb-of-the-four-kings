@@ -1,4 +1,4 @@
-from card import Card
+from card import Card, Suites
 from deck import Deck
 from random import seed
 from collections import Counter
@@ -25,8 +25,8 @@ class TestDeck(unittest.TestCase):
     # Test creation of standard unshuffled deck
     def test_create_1(self):
         deck = Deck(shuffled=False)
-        for card1, card2 in deck, correct_deck:
-            assert card1 == card2, f"{card1} is not the same as {card2}"
+        for i in range(len(correct_deck)):
+            assert deck[i] == correct_deck[i], f"{deck[i]} is not the same as {correct_deck[i]}"
 
     # test creation of standard shuffled deck
     def test_create_2(self):
@@ -64,6 +64,31 @@ class TestDeck(unittest.TestCase):
     # test creation of 2 shuffled decks
     def test_create_7(self):
         deck = Deck(n=2)
+        card_count = Counter(deck)
+        for card in correct_deck:
+            assert card in deck, f"Expected to find {card} in deck, found no such card"
+        for card, count in card_count.items():
+            assert count==2, f"Expected to find 2 of {card}, found {count} instead"
+
+    # stress test creation of 2000 shuffled decks
+    def test_create_8(self):
+        deck = Deck(n=2000)
+        card_count = Counter(deck)
+        for card in correct_deck:
+            assert card in deck, f"Expected to find {card} in deck, found no such card"
+        for card, count in card_count.items():
+            assert count == 2000, f"Expected to find 2000 of {card}, found {count} instead"
+
+    def test_create_9(self):
+        deck = Deck(n=1000, num_jokers=3000)
+        card_count = Counter(deck)
+        for card in correct_deck:
+            assert card in deck, f"Expected to find {card} in deck, found no such card"
+        for card, count in card_count.items():
+            if card.suite == Suites.Joker:
+                assert count == 3000, f"Expected to find 3000 of Joker, found {count} instead."
+            else:
+                assert count == 1000, f"Expected to find 1000 of {card}, found {count} instead"
 
 
 if __name__ == "__main__":

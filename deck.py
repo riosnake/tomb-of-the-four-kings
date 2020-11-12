@@ -1,5 +1,5 @@
 from card import Card, Suites
-from random import choice, random
+import random
 
 """
 A generic version of a deck of cards, not specifically built for tomb of the four kings.
@@ -33,7 +33,7 @@ class Deck:
             print(card)
 
     def __iter__(self):
-        return self.deck
+        return iter(self.deck)
 
     def __len__(self):
         return len(self.deck)
@@ -64,7 +64,7 @@ class Deck:
     def create_deck(num_jokers=0, n=1):
         deck = []
         for i in range(n):
-            for suite in Suites:
+            for suite in list(Suites)[1:]:
                 for number in range(1, 14):
                     deck.append(Card(suite=suite, number=number))
 

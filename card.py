@@ -4,10 +4,10 @@ import enum
 # quick enum for card suites.
 class Suites(enum.Enum):
     Joker = 0
-    Diamonds = 1
-    Clubs = 2
-    Hearts = 3
-    Spades = 4
+    Spades = 1
+    Diamonds = 2
+    Clubs = 3
+    Hearts = 4
 
 class Card:
 
@@ -17,14 +17,17 @@ class Card:
     Default constructor will randomly create a card.
     """
     def __init__(self, suite=None, number=None):
+        # convert suite to a proper enum if using str
+        if type(suite) is str:
+            suite = Suites[suite]
         # sanitize the inputs
         if suite not in Suites:
             raise ValueError(f"Suite can only be Diamonds, Hearts, Clubs, Spades, or Joker.\nPassed in {suite}")
-        if number == 0 and suite != "Joker":
+        if number == 0 and suite != Suites.Joker:
             raise ValueError(f"Only the Joker may have the number 0 as it's value\nPassed in {suite}")
-        if suite == "Joker" and number != 0:
+        if suite == Suites.Joker and number != 0:
             raise ValueError(f"The Joker may only have the number 0 as it's value\nPassed in {number}")
-        elif number not in range(1, 14):
+        elif number not in range(0, 14):
             raise ValueError(f"Number can only be 1 through 13\nPassed in {number}")
 
         if number is not None:
@@ -33,8 +36,10 @@ class Card:
             self.number = random.choice(range(1, 14))
 
         if suite is not None:
-            self.suite = Suites[suite]
+            self.suite = suite
         else:
+            # excludes the joker from being a possible choice randomly generated card.
+            # would be too much work to implement a proper joker implementation for too little payoff.
             self.suite = random.choice(list(Suites)[1:])
 
     def __repr__(self):
@@ -58,3 +63,5 @@ class Card:
     def __eq__(self, other):
         return self.suite == other.suite and self.number == other.number
 
+    def __hash__(self):
+        return hash((self.suite, self.number))
