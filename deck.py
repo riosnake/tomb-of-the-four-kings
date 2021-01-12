@@ -21,8 +21,8 @@ class Deck:
         self.deck = self.create_deck(num_jokers=num_jokers, n=n)
         if shuffled:
             self.shuffle()
-        self.hand = []
         self.discard = []
+        self.deck_size = len(self.deck)
 
     def __repr__(self):
         print("Deck: ")
@@ -73,17 +73,40 @@ class Deck:
         return deck
 
     """
-    Returns the first card in the deck, and adds it to the end of the discard pile
+    Returns the card on top of the deck, if n=1, or 
     """
-    def draw(self):
-        card = self.deck.pop(0)
-        self.discard.append(card)
-        return card
+    def draw(self, n=1):
+        # cant draw negative cards
+        if n < 1:
+            raise ValueError("Cant draw less than 1 card!")
+        # We could make it so that if there are no cards left in the deck, we shuffle the discard back
+        # into the deck and continue drawing, but we would still need to check if the player is trying to draw
+        # more cards than exist in the deck + discard.
+
+        # If, in the future, we wanted to institute a hand limit, this would not be the place to modify.
+        if n > len(self.deck):
+            raise ValueError("For now, cannot draw more cards than exist in the deck!")
+        if n is 1:
+            return self.deck.pop(0)
+        return [self.deck.pop(0) for i in range(n)]
+
 
     """
-    Returns a list of x cards drawn from the top of the deck.
+    Takes a card and adds it into the discard pile.
     """
-    def draw_multiple(self, num_of_cards_to_draw):
-        cards = [self.deck.pop(0) for i in range(num_of_cards_to_draw)]
+    def discard_card(self, card):
+        # make sure we dont try to add random data types to the discard pile.
+        assert isinstance(card, Card)
+        self.discard.append(card)
+        return
+
+    """
+    Takes a list of cards and adds it into the discard pile.
+    """
+    def discard_multiple(self, cards):
+        # make sure we dont try to add random data types to the discard pile.
+        for card in cards:
+            assert isinstance(card, Card)
         self.discard += cards
-        return cards
+        return
+

@@ -78,7 +78,7 @@ class TestDeck(unittest.TestCase):
             assert card in deck, f"Expected to find {card} in deck, found no such card"
         for card, count in card_count.items():
             assert count == 2000, f"Expected to find 2000 of {card}, found {count} instead"
-
+    # another stress test.
     def test_create_9(self):
         deck = Deck(n=1000, num_jokers=3000)
         card_count = Counter(deck)
@@ -89,6 +89,10 @@ class TestDeck(unittest.TestCase):
                 assert count == 3000, f"Expected to find 3000 of Joker, found {count} instead."
             else:
                 assert count == 1000, f"Expected to find 1000 of {card}, found {count} instead"
+
+    def test_draw(self):
+        deck = Deck(shuffled=False)
+        card = deck.draw()
 
 
 if __name__ == "__main__":
