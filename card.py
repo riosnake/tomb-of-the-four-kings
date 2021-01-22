@@ -43,16 +43,16 @@ class Card:
             self.suite = random.choice(list(Suites)[1:])
 
     def __repr__(self):
-        if self.number not in [1,11,12,13]:
-            return f"{self.number} of {self.suite.name}"
-        elif self.number == 1:
+        if self.number == 1:
             return f"Ace of {self.suite.name}"
         elif self.number == 11:
             return f"Jack of {self.suite.name}"
         elif self.number == 12:
             return f"Queen of {self.suite.name}"
-        else:
+        elif self.number == 13:
             return f"King of {self.suite.name}"
+        else:
+            return f"{self.number} of {self.suite.name}"
 
     """
     One thing to note is that, while it would make sense to create a __lt__ or __gt__ for cards,

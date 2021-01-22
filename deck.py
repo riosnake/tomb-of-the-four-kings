@@ -16,9 +16,10 @@ class Deck:
         shuffled: sets whether the deck should start out shuffled or not
         num_jokers: sets how many jokers should appear in the deck
         n: determines how many decks of 52 cards are created and used
+        suites_excluded: list of suites that should not appear when the deck is created.
     """
-    def __init__(self, shuffled=True, num_jokers=0, n=1):
-        self.deck = self.create_deck(num_jokers=num_jokers, n=n)
+    def __init__(self, shuffled=True, num_jokers=0, n=1, suites_excluded=None):
+        self.deck = self.create_deck(num_jokers=num_jokers, n=n, suites_excluded=suites_excluded)
         if shuffled:
             self.shuffle()
         self.discard = []
@@ -57,14 +58,29 @@ class Deck:
         self.discard = []
 
     """
-    Returns a deck of n * 52 + num_jokers unshuffled cards.
+    Returns a list of n * 52 + num_jokers unshuffled cards.
     jokers are all added at the end of each deck.
+    
+    inputs:
+    num_jokers: determines the number of jokers added into the deck.
+    n: determines how many decks are created.
+    suites_excluded: used to remove certain suites from being added into the deck, passed in as a list or else fails.
     """
     @staticmethod
-    def create_deck(num_jokers=0, n=1):
+    def create_deck(num_jokers=0, n=1, suites_excluded=None):
         deck = []
+        suites = list(Suites)[1:]
+        if suites_excluded is not None:
+            # check to make sure suites_excluded is a list
+            if type(suites_excluded) is not list:
+                raise ValueError(f"Expected {list} for suites_excluded, got {type(suites_excluded)} instead")
+            for item in suites_excluded:
+                if item not in Suites:
+                    raise ValueError(f"Cannot pass in {item} as a suite!")
+                suites.remove(item)
+
         for i in range(n):
-            for suite in list(Suites)[1:]:
+            for suite in suites:
                 for number in range(1, 14):
                     deck.append(Card(suite=suite, number=number))
 
@@ -94,8 +110,11 @@ class Deck:
     """
     Takes a card and adds it into the discard pile.
     """
-    def discard_card(self, card):
+    def discard(self, card):
         # make sure we dont try to add random data types to the discard pile.
+        # One thing we could do is make sure we aren't adding a card that wasn't already in
+        # the deck, but I dont believe that's nessesary, as many games have mechanics that will
+        # give you cards that you didnt have before.
         assert isinstance(card, Card)
         self.discard.append(card)
         return
